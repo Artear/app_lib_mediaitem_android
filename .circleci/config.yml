@@ -1,0 +1,159 @@
+defaults: &defaults
+  working_directory: ~/code
+  docker:
+    - image: circleci/android:api-28
+  environment:
+    JVM_OPTS: -Xmx4g
+
+version: 2
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - checkout
+      - save_cache:
+          key: checkout-cache-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/code
+
+  download_dependencies:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: checkout-cache-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mediaitem/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mediaitem/build.gradle" }}
+
+  release:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: checkout-cache-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mediaitem/build.gradle" }}
+      - run:
+          name: Build
+          command: ./gradlew assembleRelease
+      - save_cache:
+          paths:
+            - mediaitem/build/outputs/aar
+          key: aar-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - store_artifacts:
+          path: mediaitem/build/outputs/aar
+          destination: aar
+      - save_cache:
+          paths:
+            - mediaitem/build/libs
+          key: artifacts-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - store_artifacts:
+          path: mediaitem/build/libs
+          destination: libs
+
+  lint:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: checkout-cache-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mediaitem/build.gradle" }}
+      - run:
+          name: Run Release Lint Checker
+          command: ./gradlew lintRelease
+      - store_artifacts:
+          path: mediaitem/build/reports
+          destination: reports
+      - store_test_results:
+          path: mediaitem/build/test-results
+
+  test:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: checkout-cache-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mediaitem/build.gradle" }}
+      - run:
+          name: Run Tests
+          command: ./gradlew test
+      - store_artifacts:
+          path: mediaitem/build/reports
+          destination: reports
+      - store_test_results:
+          path: mediaitem/build/test-results
+
+  stable:
+    <<: *defaults
+    steps:
+      - run:
+          command: echo Library Stable
+
+  check_dependencies:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: checkout-cache-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mediaitem/build.gradle" }}
+      - run:
+          name: Dependencies Check
+          command: ./gradlew dependencyUpdates -Drevision=release
+      - store_artifacts:
+          path: mediaitem/build/dependencyUpdates/report.txt
+          destination: dependencies/checks.txt
+
+  bintray:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: checkout-cache-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "mediaitem/build.gradle" }}
+      - restore_cache:
+          key: aar-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: artifacts-{{ .Branch }}-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Upload library to bintray
+          command: ./gradlew bintrayUpload
+      - store_artifacts:
+          path: mediaitem/build/publications/Bintray
+          destination: pom
+
+workflows:
+  version: 2
+  assemble_and_test:
+    jobs:
+      - checkout_code
+      - download_dependencies:
+          requires:
+            - checkout_code
+      - release:
+          requires:
+            - download_dependencies
+      - check_dependencies:
+          requires:
+            - download_dependencies
+      - lint:
+          requires:
+            - download_dependencies
+      - test:
+          requires:
+            - download_dependencies
+      - stable:
+          requires:
+            - lint
+            - release
+            - test
+#      - bintray:
+#          filters:
+#            branches:
+#              only: master
+#          requires:
+#            - stable
