@@ -151,9 +151,9 @@ workflows:
             - lint
             - release
             - test
-#      - bintray:
-#          filters:
-#            branches:
-#              only: master
-#          requires:
-#            - stable
+      - bintray:
+          filters:
+            branches:
+              only: master
+          requires:
+            - stable
