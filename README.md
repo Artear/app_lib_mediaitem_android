@@ -3,6 +3,12 @@ Media item Library
 
 - Library for draw any media in a stevedore views
 
+Version 
+--------
+
+[![Latest Version](https://api.bintray.com/packages/artearmobile/Android/Media-Item/images/download.svg)](https://bintray.com/artearmobile/Android/Media-Item/_latestVersion)
+
+
 Download
 --------
 via Maven:
@@ -10,12 +16,12 @@ via Maven:
 <dependency>
   <groupId>com.artear.stevedore</groupId>
   <artifactId>mediaitem</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-implementation 'com.artear.stevedore:mediaitem:0.0.1'
+implementation 'com.artear.stevedore:mediaitem:0.0.2'
 ```
 Lib requires at minimum Java 7 or Android 4.1.
 

@@ -90,6 +90,14 @@ dependencies {
 
     //Kotlin
     implementation lib.kotlin.standardLib
+
+    //Android X
+    implementation lib.androidx.appcompat
+    implementation lib.androidx.constraintLayout
+
+    //Artear
+    implementation lib.artear.stevedoreItems
+    implementation lib.artear.domain
 }
 
 dependencyUpdates.resolutionStrategy {
