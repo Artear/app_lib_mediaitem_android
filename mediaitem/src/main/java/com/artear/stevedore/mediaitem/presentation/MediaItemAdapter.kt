@@ -24,7 +24,7 @@ import com.artear.stevedore.mediaitem.R
 import com.artear.stevedore.stevedoreitems.presentation.contract.ArtearViewHolder
 import com.artear.stevedore.stevedoreitems.presentation.contract.ItemAdapter
 import com.artear.stevedore.stevedoreitems.presentation.model.ArtearItem
-import com.artear.stevedore.stevedoreitems.presentation.model.ArtearSection
+import com.artear.stevedore.stevedoreitems.presentation.model.ArtearItemDecoration
 
 
 class MediaItemAdapter : ItemAdapter<MediaItemData<*>> {
@@ -40,7 +40,7 @@ class MediaItemAdapter : ItemAdapter<MediaItemData<*>> {
     }
 
     override fun onBindViewHolderBase(holder: ArtearViewHolder<MediaItemData<*>>,
-                                      model: MediaItemData<*>, artearSection: ArtearSection) {
-        holder.bind(model, artearSection)
+                                      model: MediaItemData<*>, artearItemDecoration: ArtearItemDecoration) {
+        holder.bind(model, artearItemDecoration)
     }
 }

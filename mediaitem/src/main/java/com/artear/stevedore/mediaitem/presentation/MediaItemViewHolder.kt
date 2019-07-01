@@ -19,7 +19,7 @@ import android.net.Uri
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.artear.stevedore.stevedoreitems.presentation.contract.ArtearViewHolder
-import com.artear.stevedore.stevedoreitems.presentation.model.ArtearSection
+import com.artear.stevedore.stevedoreitems.presentation.model.ArtearItemDecoration
 import com.artear.stevedore.stevedoreitems.repository.model.box.BoxStyle
 import kotlinx.android.synthetic.main.mediaitem_view_holder.view.*
 
@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.mediaitem_view_holder.view.*
 class MediaItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         ArtearViewHolder<MediaItemData<BoxStyle>> {
 
-    override fun bind(model: MediaItemData<BoxStyle>, artearSection: ArtearSection) {
+    override fun bind(model: MediaItemData<BoxStyle>, artearItemDecoration: ArtearItemDecoration) {
         itemView.apply {
             mediaItemImage.setImageURI(Uri.parse(model.imageUrl))
             //TODO margin

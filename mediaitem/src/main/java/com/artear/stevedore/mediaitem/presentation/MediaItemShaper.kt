@@ -19,7 +19,7 @@ import com.artear.domain.coroutine.DataShaper
 import com.artear.stevedore.mediaitem.repository.BoxDataMedia
 
 import com.artear.stevedore.stevedoreitems.presentation.model.ArtearItem
-import com.artear.stevedore.stevedoreitems.presentation.model.ArtearSection
+import com.artear.stevedore.stevedoreitems.presentation.model.ArtearItemDecoration
 import com.artear.stevedore.stevedoreitems.repository.model.box.Box
 import com.artear.stevedore.stevedoreitems.repository.model.media.*
 import com.artear.stevedore.stevedoreitems.repository.model.media.MediaType.*
@@ -36,7 +36,7 @@ class MediaItemShaper : DataShaper<Box, ArtearItem> {
             val data = MediaItemData(imageUrl,
                     input.style
             )
-            ArtearItem(data, ArtearSection())
+            ArtearItem(data, ArtearItemDecoration())
         }
     }
 
