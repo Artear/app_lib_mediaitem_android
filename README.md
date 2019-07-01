@@ -16,12 +16,12 @@ via Maven:
 <dependency>
   <groupId>com.artear.stevedore</groupId>
   <artifactId>mediaitem</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-implementation 'com.artear.stevedore:mediaitem:0.0.2'
+implementation 'com.artear.stevedore:mediaitem:0.0.3'
 ```
 Lib requires at minimum Java 7 or Android 4.1.
 
