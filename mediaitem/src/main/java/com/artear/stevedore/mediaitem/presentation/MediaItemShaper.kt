@@ -17,40 +17,24 @@ package com.artear.stevedore.mediaitem.presentation
 
 import com.artear.domain.coroutine.DataShaper
 import com.artear.stevedore.mediaitem.repository.BoxDataMedia
-
 import com.artear.stevedore.stevedoreitems.presentation.model.ArtearItem
 import com.artear.stevedore.stevedoreitems.presentation.model.ArtearItemDecoration
 import com.artear.stevedore.stevedoreitems.repository.model.box.Box
-import com.artear.stevedore.stevedoreitems.repository.model.media.*
-import com.artear.stevedore.stevedoreitems.repository.model.media.MediaType.*
 
 
 class MediaItemShaper : DataShaper<Box, ArtearItem> {
 
-    override suspend fun transform(input: Box): ArtearItem {
+    override suspend fun transform(input: Box): ArtearItem? {
 
         val boxDataArticle = (input.data as BoxDataMedia)
-        val imageUrl = getImage(boxDataArticle.media)
+        val imageUrl = boxDataArticle.media.getImage()
 
-        return imageUrl.let {
-            val data = MediaItemData(imageUrl,
-                    input.style
+        return imageUrl?.let { url ->
+            ArtearItem(
+                    MediaItemData(url, input.style)
+                    , ArtearItemDecoration()
             )
-            ArtearItem(data, ArtearItemDecoration())
         }
     }
-
-    /**
-     * This function should be in stevedoreitems ?????
-     */
-    private fun getImage(media: Media): String {
-        return when (media.type) {
-            PICTURE -> (media.data as MediaDataPicture).url
-            YOUTUBE -> (media.data as MediaDataYoutube).image.url
-            GALLERY -> (media.data as MediaDataGallery).items[0].url //TODO: REVISAR
-            VIDEO -> (media.data as MediaDataVideo).image.url
-        }
-    }
-
 
 }
