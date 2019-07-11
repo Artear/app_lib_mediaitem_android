@@ -30,7 +30,6 @@ class MediaItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     override fun bind(model: MediaItemData<BoxStyle>, artearItemDecoration: ArtearItemDecoration) {
         itemView.apply {
             mediaItemImage.setImageURI(Uri.parse(model.imageUrl))
-            //TODO margin
         }
     }
 
